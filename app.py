@@ -1,3 +1,5 @@
+import os
+import json
 from flask import Flask, request
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -11,9 +13,14 @@ scope = [
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name(
-    "credentials.json", scope
+google_creds = os.getenv("GOOGLE_CREDENTIALS")
+
+creds_dict = json.loads(google_creds)
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(
+    creds_dict, scope
 )
+
 
 client = gspread.authorize(creds)
 sheet = client.open("Leads VM Store").sheet1
